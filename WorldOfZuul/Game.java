@@ -41,7 +41,7 @@ public class Game
         laundryRoom = new Room("In the basement laundry room");
         basementLobby = new Room("In the basement lobby");
         storageRoom = new Room("In the basement storage room");
-        escapeRoom = new Room("You found the room that leads to escape");
+        escapeRoom = new Room("You found the room that leads to escape. You win");
         guardsRoom = new Room("On the first floor in the guards room");
         firstFloorLobby = new Room ("In the lobby on the first floor");
         bathroom = new Room("In the first floor bathroom");
@@ -155,8 +155,7 @@ public class Game
      */
     private void printHelp() 
     {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
+        System.out.println("You are a prisoner trying to escape a prison");
         System.out.println();
         System.out.println("Your command words are:");
         System.out.println("   go quit help");
@@ -179,9 +178,18 @@ public class Game
         // Try to leave current room.
         Room nextRoom = null;
         nextRoom = currentRoom.getExit(direction);
+        
+        if (nextRoom == null) {
+            System.out.println("There is no door!");
+        }
+        else {
+            currentRoom = nextRoom;
+        }
         printLocationInfo();
         
+        
     }
+    
 
     /** 
      * "Quit" was entered. Check the rest of the command to see
