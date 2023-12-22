@@ -34,40 +34,57 @@ public class Game
      */
     private void createRooms()
     {
-        Room auditoriumLobby, centerWestHallway, centerEastHallway, fortGreenePlace,
-             toNorthWestEntrance, toSouthWestEntrance, auditorium, toNorthEastEntrance,
-             toSouthEastEntrance, southEliot, murral;
+        Room boilerRoom, laundryRoom, basementLobby, storageRoom, escapeRoom, guardsRoom, bathroom, firstFloorLobby, cell1, cell2, cell3, secondFloorLobby, cafeteria, gym;
       
         // create the rooms
-        auditoriumLobby = new Room("in lobby outside the auditorium");
-        centerWestHallway = new Room("in the center west hallway");
-        centerEastHallway = new Room("in the center east hallway");
-        fortGreenePlace = new Room("outside center west on Fort Greene Place");
-        toNorthWestEntrance = new Room("looking toward the north west entrance");
-        toSouthWestEntrance = new Room("looking toard the south west entrance");
-        auditorium = new Room("Auditorium");
-        toNorthEastEntrance = new Room("looking toward the north east entrance");
-        toSouthEastEntrance = new Room("looking toward the south east entrance");
-        southEliot = new Room("outside center east on South Elliot"); 
-        murral = new Room("at the murral in the lobby");
-        auditorium = new Room("in the auditorium");
+        boilerRoom = new Room("In the basement boiler room");
+        laundryRoom = new Room("In the basement laundry room");
+        basementLobby = new Room("In the basement lobby");
+        storageRoom = new Room("In the basement storage room");
+        escapeRoom = new Room("You found the room that leads to escape");
+        guardsRoom = new Room("On the first floor in the guards room");
+        firstFloorLobby = new Room ("In the lobby on the first floor");
+        bathroom = new Room("In the first floor bathroom");
+        cell1 = new Room("In cell one");
+        cell2 = new Room("In cell two");
+        cell3 = new Room("In cell three");
+        secondFloorLobby = new Room("In the second floor lobby");
+        cafeteria = new Room("In the second floor cafeteria");
+        gym = new Room("In the gym on the second floor");
+        
+
+        
         
         // initialise room exits (north, east, south, west)
-        auditoriumLobby.setExits(murral, centerEastHallway, auditorium, centerWestHallway);
-        centerWestHallway.setExits(toNorthWestEntrance, auditoriumLobby, toSouthWestEntrance, fortGreenePlace);
-        centerEastHallway.setExits(toNorthEastEntrance, southEliot, toSouthEastEntrance, auditoriumLobby);
 
-        fortGreenePlace.setExits(null, centerWestHallway, null, null);
-        toNorthWestEntrance.setExits(null, null, centerWestHallway, null);
-        toSouthWestEntrance.setExits(centerWestHallway, null, null, null);
-        auditorium.setExits(auditoriumLobby, null, null, null);
-        murral.setExits(null, null, auditoriumLobby, null);
-        southEliot.setExits(null, centerEastHallway, null, null);
-        toNorthEastEntrance.setExits(null, null, centerEastHallway, null);
-        toSouthEastEntrance.setExits(centerEastHallway, null, null, null);
+        // basement
+        boilerRoom.setExits(null, null, laundryRoom, null);
+        laundryRoom.setExits(boilerRoom, basementLobby, null, null);
+        basementLobby.setExits(null, storageRoom, null, laundryRoom);
+        basementLobby.setExit("upstairs", guardsRoom);
+        storageRoom.setExits(null, null, escapeRoom, basementLobby);
+
+        // first floor
+        guardsRoom.setExits(null, null, bathroom, null);
+        guardsRoom.setExit("downstairs", basementLobby);
+        bathroom.setExits(guardsRoom, firstFloorLobby, null, null);
+        firstFloorLobby.setExits(null, cell2, null, bathroom);
+        firstFloorLobby.setExit("upstairs", secondFloorLobby);
+        cell1.setExits(cell2, null, null, null);
+        cell2.setExits(cell3, null, cell1, firstFloorLobby);
+        cell3.setExits(null, null, cell2, null);
+
+        // second floor
+        secondFloorLobby.setExits(null, gym, null, cafeteria);
+        secondFloorLobby.setExit("downstairs", firstFloorLobby);
+        cafeteria.setExits(null, secondFloorLobby, null, null);
+        gym.setExits(null, null, null, secondFloorLobby);
+
+
+
         
 
-        currentRoom = auditoriumLobby;  // start game outside
+        currentRoom = cell1;  // start game outside
     }
 
     /**
@@ -98,21 +115,7 @@ public class Game
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        System.out.println("You are " + currentRoom.getDescription());
-        System.out.print("You can go: ");
-        if(currentRoom.northExit != null) {
-            System.out.print("north ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("east ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("south ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("west ");
-        }
-        System.out.println();
+        printLocationInfo();
     }
 
     /**
@@ -175,40 +178,9 @@ public class Game
 
         // Try to leave current room.
         Room nextRoom = null;
-        if(direction.equals("north")) {
-            nextRoom = currentRoom.northExit;
-        }
-        if(direction.equals("east")) {
-            nextRoom = currentRoom.eastExit;
-        }
-        if(direction.equals("south")) {
-            nextRoom = currentRoom.southExit;
-        }
-        if(direction.equals("west")) {
-            nextRoom = currentRoom.westExit;
-        }
-
-        if (nextRoom == null) {
-            System.out.println("There is no door!");
-        }
-        else {
-            currentRoom = nextRoom;
-            System.out.println("You are " + currentRoom.getDescription());
-            System.out.print("Exits: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("north ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("east ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("south ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("west ");
-            }
-            System.out.println();
-        }
+        nextRoom = currentRoom.getExit(direction);
+        printLocationInfo();
+        
     }
 
     /** 
@@ -225,5 +197,12 @@ public class Game
         else {
             return true;  // signal that we want to quit
         }
+    }
+
+    private void printLocationInfo(){
+        System.out.println("You are " + currentRoom.getDescription());
+        System.out.print("You can go: ");
+        System.out.print(currentRoom.getExitString());
+        System.out.println();
     }
 }

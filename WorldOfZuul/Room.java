@@ -1,3 +1,5 @@
+import java.util.HashMap;
+import java.util.Set;
 /**
  * Class Room - a room in an adventure game.
  *
@@ -12,13 +14,12 @@
  * @author  Michael Kölling and David J. Barnes
  * @version 2016.02.29
  */
+
 public class Room 
 {
-    public String description;
-    public Room northExit;
-    public Room southExit;
-    public Room eastExit;
-    public Room westExit;
+    private String description;
+    private HashMap <String, Room> exits;
+    
 
     /**
      * Create a room described "description". Initially, it has
@@ -29,6 +30,7 @@ public class Room
     public Room(String description) 
     {
         this.description = description;
+        exits = new HashMap();
     }
 
     /**
@@ -42,17 +44,26 @@ public class Room
     public void setExits(Room north, Room east, Room south, Room west) 
     {
         if(north != null) {
-            northExit = north;
+            exits.put("north", north);
         }
         if(east != null) {
-            eastExit = east;
+            exits.put("east", east);
         }
         if(south != null) {
-            southExit = south;
+            exits.put("south", south);
         }
         if(west != null) {
-            westExit = west;
+            exits.put("west", west);
         }
+    }
+
+
+    /** Define an exit from this room
+     * @param direction The direction of the exit
+     * @param neighbor The room in the given direction
+     */
+    public void setExit(String direction, Room neighbor){
+        exits.put(direction, neighbor);
     }
 
     /**
@@ -62,5 +73,29 @@ public class Room
     {
         return description;
     }
+
+    /** Return the room that is reached if we go from this room in direction
+     * "direction." If there is no room return null;
+     * @param direction The exit's direction
+     * @return The room in the given direction
+     */
+    public Room getExit(String direction){
+        return exits.get(direction);
+    }
+
+    /** Return a description of the rooms Exits
+     * for example "Exits: north, west"
+     * @return A description of the available exits
+     */
+    public String getExitString(){
+        String returnString = "";
+        Set<String> keys = exits.keySet();
+        for (String exit: keys){
+            returnString += " " + exit;
+        }
+        return returnString;
+
+    }
+
 
 }
